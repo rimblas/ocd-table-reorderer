@@ -21,12 +21,12 @@ wwv_flow_api.import_begin (
 end;
 /
  
-prompt APPLICATION 108 - The OCD Table Re-Orderer
+prompt APPLICATION 108 - The OCD Table Column Re-Orderer
 --
 -- Application Export:
 --   Application:     108
---   Name:            The OCD Table Re-Orderer
---   Date and Time:   08:48 Friday June 5, 2020
+--   Name:            The OCD Table Column Re-Orderer
+--   Date and Time:   14:16 Friday June 5, 2020
 --   Exported By:     JMR
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -36,11 +36,11 @@ prompt APPLICATION 108 - The OCD Table Re-Orderer
 
 -- Application Statistics:
 --   Pages:                      2
---     Items:                    3
+--     Items:                    4
 --     Processes:                5
 --     Regions:                  5
 --     Buttons:                  1
---     Dynamic Actions:          2
+--     Dynamic Actions:          3
 --   Shared Components:
 --     Logic:
 --     Navigation:
@@ -82,7 +82,7 @@ wwv_flow_api.create_flow(
  p_id=>wwv_flow.g_flow_id
 ,p_display_id=>nvl(wwv_flow_application_install.get_application_id,108)
 ,p_owner=>nvl(wwv_flow_application_install.get_schema,'JMR')
-,p_name=>nvl(wwv_flow_application_install.get_application_name,'The OCD Table Re-Orderer')
+,p_name=>nvl(wwv_flow_application_install.get_application_name,'The OCD Table Column Re-Orderer')
 ,p_alias=>nvl(wwv_flow_application_install.get_application_alias,'F_108')
 ,p_page_view_logging=>'YES'
 ,p_page_protection_enabled_y_n=>'Y'
@@ -96,17 +96,18 @@ wwv_flow_api.create_flow(
 ,p_authentication=>'PLUGIN'
 ,p_authentication_id=>wwv_flow_api.id(10873303317565227)
 ,p_application_tab_set=>0
-,p_logo_image=>'TEXT:The OCD Table Re-Orderer'
+,p_logo_image=>'TEXT:The OCD Table Column Re-Orderer'
 ,p_proxy_server=> nvl(wwv_flow_application_install.get_proxy,'')
 ,p_flow_version=>'release 1.0'
 ,p_flow_status=>'AVAILABLE_W_EDIT_LINK'
+,p_flow_unavailable_text=>'This application is currently unavailable at this time.'
 ,p_exact_substitutions_only=>'Y'
 ,p_browser_cache=>'N'
 ,p_browser_frame=>'D'
 ,p_rejoin_existing_sessions=>'N'
 ,p_csv_encoding=>'Y'
 ,p_last_updated_by=>'JORGE@RIMBLAS.COM'
-,p_last_upd_yyyymmddhh24miss=>'20200605084352'
+,p_last_upd_yyyymmddhh24miss=>'20200605141605'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>2
 ,p_ui_type_name => null
@@ -3834,9 +3835,9 @@ wwv_flow_api.create_row_template(
 ,p_row_template1=>wwv_flow_string.join(wwv_flow_t_varchar2(
 '<li data-id="#COLUMN_ID#">',
 '    <div class="element">',
-'        <div class="drag-handle one"></div>',
+'        <div class="drag-handle one #DRAG_DISABLED#"></div>',
 '        #VISIBLE_CHK# #COLUMN_NAME#',
-'        <div class="drag-handle two"></div>',
+'        <div class="drag-handle two #DRAG_DISABLED#"></div>',
 '    </div>',
 '</li>'))
 ,p_row_template_before_rows=>' <ul class="#COMPONENT_CSS_CLASSES#">'
@@ -11250,15 +11251,25 @@ wwv_flow_api.create_page(
 '}',
 '.drag-handle.one {',
 '    left: -15px;',
+'    top: -3px;',
+'    padding: 20px 0;',
+'    background-color: white;',
 '}',
 '.drag-handle.two {',
 '    right: 0;',
 '}',
+'.drag-handle.disabled {',
+'    cursor: not-allowed;',
+'    opacity: .4;',
+'}',
 'ul.appColumns {',
 '    list-style-type: none;',
 '}',
-'ul.appColumns liX {',
-'    position: relative;',
+'.appColumns .commentElement {',
+'    position: absolute;',
+'    right: 20px;',
+'    color: gray;',
+'    cursor: help;',
 '}',
 '.appColumns .element {',
 '    position: relative;',
@@ -11268,6 +11279,7 @@ wwv_flow_api.create_page(
 '    transition: all .1s ease-out;',
 '    padding: 1em 0;',
 '    margin-left: 15px;',
+'    background-color: #fff;',
 '    font-family: ''Anonymous Pro'',monospace;',
 '}',
 '',
@@ -11303,13 +11315,51 @@ wwv_flow_api.create_page(
 '    top: 12px;',
 '    left: 12px;',
 '}',
-'.ui-state-highlight { height: 1.5em; line-height: 1.2em; }'))
+'.ui-state-highlight { height: 1.5em; line-height: 1.2em; }',
+'',
+'.nodatafound {position: fixed;}',
+'.cellPopup {',
+'    -webkit-transition: .5s cubic-bezier(.25,.1,.3,1.5) transform;',
+'    transition: .5s cubic-bezier(.25,.1,.3,1.5) transform;',
+'    -webkit-transform-origin: 1.4em -.4em;',
+'    transform-origin: 1.4em -.4em;',
+'}',
+'.cellPopup {',
+'    position: absolute;',
+'    z-index: 900;',
+'    top: 0em;',
+'    left: 5.5em;',
+'    max-width: 34em;',
+'    min-width: 15em;',
+'    padding: .6em .8em;',
+'    border-radius: .3em;',
+'    margin: .3em 0 0 -.2em;',
+'    background-color: #068cf9;',
+'    color: #fff;',
+'    border: 1px solid rgba(0,0,0,.3);',
+'    box-shadow: 0.05em 0.2em 0.6em rgba(0,0,0,.2);',
+'    font-family: ''Helvetica Neue'',''Segoe UI'',Helvetica;',
+'    font-size: 1.3em;',
+'}',
+'.cellPopup:before {',
+'    content: "";',
+'    position: absolute;',
+'    top: -.4em;',
+'    left: 1em;',
+'    padding: .35em;',
+'    background: inherit;',
+'    border: inherit;',
+'    border-right: 0;',
+'    border-bottom: 0;',
+'    -webkit-transform: rotate(45deg);',
+'    transform: rotate(45deg);',
+'}'))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_overwrite_navigation_list=>'N'
 ,p_page_is_public_y_n=>'N'
 ,p_cache_mode=>'NOCACHE'
 ,p_last_updated_by=>'JORGE@RIMBLAS.COM'
-,p_last_upd_yyyymmddhh24miss=>'20200605084352'
+,p_last_upd_yyyymmddhh24miss=>'20200605135950'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(10367282126981511)
@@ -11348,19 +11398,28 @@ wwv_flow_api.create_report_region(
 ,p_component_template_options=>'#DEFAULT#'
 ,p_display_point=>'BODY'
 ,p_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'select column_id',
-'     , column_name',
-'     , decode(column_id, null, ''fa-eye-slash'', ''fa-fw'') visible_chk  ',
-'  from user_tab_columns',
-' where table_name = :P1_TABLE_NAME',
-'order by 1 nulls last'))
+'select tc.column_id',
+'     , tc.column_name',
+'     , tc.column_name column_name_plain',
+'     , decode(c.comments, null, ''u-vh'', '''') hide_comments_class',
+'     , c.comments',
+'     , decode(tc.column_id, null, ''fa-eye-slash'', ''fa-fw'') visible_chk  ',
+'     , decode(tc.column_id, null, '' '', ''u-vh'') visible_class',
+'     , decode(tc.column_id, null, ''disabled'', '''') drag_disabled',
+'  from user_tab_columns tc',
+'     , user_col_comments c',
+' where tc.table_name = c.table_name(+)',
+'   and tc.column_name = c.column_name (+)',
+'   and tc.table_name = :P1_TABLE_NAME',
+'order by tc.column_id nulls last',
+''))
 ,p_source_type=>'NATIVE_SQL_REPORT'
 ,p_ajax_enabled=>'Y'
 ,p_ajax_items_to_submit=>'P1_TABLE_NAME'
 ,p_query_row_template=>wwv_flow_api.id(10879930243637374)
 ,p_query_num_rows=>200
 ,p_query_options=>'DERIVED_REPORT_COLUMNS'
-,p_query_show_nulls_as=>'-'
+,p_query_no_data_found=>'<span class="cellPopup">Find a table and re-order!</span>'
 ,p_csv_output=>'N'
 ,p_prn_output=>'N'
 ,p_sort_null=>'L'
@@ -11381,18 +11440,69 @@ wwv_flow_api.create_report_columns(
 ,p_column_display_sequence=>2
 ,p_column_heading=>'Column'
 ,p_use_as_row_header=>'N'
-,p_column_html_expression=>'<span class="debug">#COLUMN_ID#</span> #COLUMN_NAME#'
+,p_column_html_expression=>'<span class="debug">#COLUMN_ID#</span> #COLUMN_NAME# <span class="fa fa-question-circle commentElement #HIDE_COMMENTS_CLASS#" title="#COMMENTS#"></span>'
 ,p_derived_column=>'N'
 ,p_include_in_export=>'Y'
 );
 wwv_flow_api.create_report_columns(
- p_id=>wwv_flow_api.id(10368550622981524)
+ p_id=>wwv_flow_api.id(10369443645981533)
 ,p_query_column_id=>3
-,p_column_alias=>'VISIBLE_CHK'
+,p_column_alias=>'COLUMN_NAME_PLAIN'
 ,p_column_display_sequence=>3
-,p_column_heading=>'Visible chk'
+,p_column_heading=>'Column name plain'
 ,p_use_as_row_header=>'N'
-,p_column_html_expression=>'<span aria-hidden="true" class="fa #VISIBLE_CHK#"></span>'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(10368890704981527)
+,p_query_column_id=>4
+,p_column_alias=>'HIDE_COMMENTS_CLASS'
+,p_column_display_sequence=>4
+,p_column_heading=>'Hide comments class'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(10368909857981528)
+,p_query_column_id=>5
+,p_column_alias=>'COMMENTS'
+,p_column_display_sequence=>5
+,p_column_heading=>'Comments'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(10369241675981531)
+,p_query_column_id=>6
+,p_column_alias=>'VISIBLE_CHK'
+,p_column_display_sequence=>7
+,p_column_heading=>'Visible chk'
+,p_column_link=>'javascript:void(0);'
+,p_column_linktext=>'<i class="fa #VISIBLE_CHK#"></i>'
+,p_column_link_attr=>'class="toggleVisibility #VISIBLE_CLASS#" data-column="#COLUMN_NAME_PLAIN#" title="Make visible"'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(10369348635981532)
+,p_query_column_id=>7
+,p_column_alias=>'VISIBLE_CLASS'
+,p_column_display_sequence=>8
+,p_column_heading=>'Visible class'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(10369020738981529)
+,p_query_column_id=>8
+,p_column_alias=>'DRAG_DISABLED'
+,p_column_display_sequence=>6
+,p_column_heading=>'Drag disabled'
+,p_use_as_row_header=>'N'
 ,p_derived_column=>'N'
 ,p_include_in_export=>'Y'
 );
@@ -11429,12 +11539,23 @@ wwv_flow_api.create_page_item(
 ,p_item_template_options=>'#DEFAULT#:t-Form-fieldContainer--large'
 ,p_warn_on_unsaved_changes=>'I'
 ,p_lov_display_extra=>'YES'
-,p_help_text=>'Select a table that you want to re-order. Then drag and drop the columns.'
+,p_help_text=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'Select a table that you want to re-order. Then drag and drop the columns.<br>',
+'<br>',
+'Read more here <a href="https://rimblas.com/blog/2020/06/the-ocd-table-column-re-orderer/" target="_blank">rimblas.com/blog/2020/06/the-ocd-table-column-re-orderer</a>'))
 ,p_attribute_01=>'SINGLE'
 ,p_attribute_08=>'CIC'
 ,p_attribute_10=>'350px'
 ,p_attribute_14=>'Y'
 ,p_attribute_15=>'100'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(10369903777981538)
+,p_name=>'P1_COLUMN_NAME'
+,p_item_sequence=>20
+,p_item_plug_id=>wwv_flow_api.id(10367637660981515)
+,p_display_as=>'NATIVE_HIDDEN'
+,p_attribute_01=>'N'
 );
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(10368122944981520)
@@ -11476,12 +11597,58 @@ wwv_flow_api.create_page_da_action(
 ,p_attribute_01=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'var el = this.affectedElements[0];',
 '$(el).find("ul").sortable({',
-'    items: ''li''',
+'    items: ''li:not([data-id=""])''',
 '  , containment: el',
 '  , helper: fixHelper',
 '  , placeholder: "ui-state-highlight"',
 '  , update: function(event,ui) { updateSeq(el); }',
 '});'))
+);
+wwv_flow_api.create_page_da_event(
+ p_id=>wwv_flow_api.id(10369599288981534)
+,p_name=>'toggle Visible'
+,p_event_sequence=>30
+,p_triggering_element_type=>'JQUERY_SELECTOR'
+,p_triggering_element=>'.toggleVisibility'
+,p_bind_type=>'live'
+,p_bind_event_type=>'click'
+);
+wwv_flow_api.create_page_da_action(
+ p_id=>wwv_flow_api.id(10369895089981537)
+,p_event_id=>wwv_flow_api.id(10369599288981534)
+,p_event_result=>'TRUE'
+,p_action_sequence=>10
+,p_execute_on_page_init=>'N'
+,p_action=>'NATIVE_SET_VALUE'
+,p_affected_elements_type=>'ITEM'
+,p_affected_elements=>'P1_COLUMN_NAME'
+,p_attribute_01=>'JAVASCRIPT_EXPRESSION'
+,p_attribute_05=>'this.triggeringElement.dataset.column'
+,p_attribute_09=>'N'
+,p_stop_execution_on_error=>'Y'
+,p_wait_for_result=>'Y'
+);
+wwv_flow_api.create_page_da_action(
+ p_id=>wwv_flow_api.id(10369614093981535)
+,p_event_id=>wwv_flow_api.id(10369599288981534)
+,p_event_result=>'TRUE'
+,p_action_sequence=>20
+,p_execute_on_page_init=>'N'
+,p_action=>'NATIVE_EXECUTE_PLSQL_CODE'
+,p_attribute_01=>'execute immediate ''alter table '' || :P1_TABLE_NAME || '' modify ('' || :P1_COLUMN_NAME || '' visible)'';'
+,p_attribute_02=>'P1_COLUMN_NAME'
+,p_stop_execution_on_error=>'Y'
+,p_wait_for_result=>'Y'
+);
+wwv_flow_api.create_page_da_action(
+ p_id=>wwv_flow_api.id(10369747967981536)
+,p_event_id=>wwv_flow_api.id(10369599288981534)
+,p_event_result=>'TRUE'
+,p_action_sequence=>30
+,p_execute_on_page_init=>'N'
+,p_action=>'NATIVE_REFRESH'
+,p_affected_elements_type=>'REGION'
+,p_affected_region_id=>wwv_flow_api.id(10367864961981517)
 );
 wwv_flow_api.create_page_process(
  p_id=>wwv_flow_api.id(10368602391981525)
@@ -11491,9 +11658,9 @@ wwv_flow_api.create_page_process(
 ,p_process_name=>'UPDATE_ORDER'
 ,p_process_sql_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'declare',
-'',
+'  subtype col_name_t is varchar2(128);',
 '  type columns_rec_type is record (',
-'      column_name  varchar2(128)',
+'      column_name  col_name_t',
 '  );',
 '',
 '  type column_tbl_type',
@@ -11502,6 +11669,8 @@ wwv_flow_api.create_page_process(
 '',
 '  cols_arr column_tbl_type;',
 '',
+'  g_curr_column col_name_t;',
+'  ',
 '  procedure add_column(p_column_name in varchar2)',
 '  is',
 '    l_index  PLS_INTEGER;',
@@ -11513,6 +11682,7 @@ wwv_flow_api.create_page_process(
 '  procedure column_to_table_end (p_table_name in varchar2, p_column_name in varchar2)',
 '  is',
 '  begin',
+'    g_curr_column := p_column_name;',
 '    -- logger.log(''Moving '' || p_table_name || ''.'' || p_column_name);',
 '    execute immediate ''alter table '' || p_table_name || '' modify ('' || p_column_name || '' invisible)'';',
 '    execute immediate ''alter table '' || p_table_name || '' modify ('' || p_column_name || '' visible)'';',
@@ -11557,7 +11727,7 @@ wwv_flow_api.create_page_process(
 '  );',
 '  apex_json.write(',
 '        p_name => ''message''',
-'      , p_value => sqlerrm',
+'      , p_value => ''Column "'' || g_curr_column || ''" '' || sqlerrm',
 '  );',
 '  apex_json.close_object;',
 'end;'))

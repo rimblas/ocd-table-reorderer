@@ -11,18 +11,20 @@ Well, I say no more.
 
 
 ## Q&A
-* Is it safe? I think so, but **USE AT YOUR OWN RISK**
+* Is it safe? I think so, I use it all the time but **USE AT YOUR OWN RISK**
 * Is the data moved? No, not at all!
 * Is a new table created? No, not at all!
 
 ## Install
-This is a straightforward single page APEX app compatible with APEX 5.1
+This is a straightforward single page APEX app compatible with APEX 5.1.
+Install the [ocd-table-column-reorder.sql](apex/ocd-table-column-reorder.sql)
+
 
 ### 18.2
-If you're on APEX 18.2 or beyond, you'll need to **remove** the JS line that references `jquery.ui.sortable.min.js` on the JavaScript File URLs section of p1. If you don't the drag and drop won't work.
+If you're on APEX 18.2 or beyond, you'll need to **remove** the JS line that references `jquery.ui.sortable.min.js` on the JavaScript File URLs section of p1. It won't cause issues to leave it, but you'll get a 404 file not found error.
 
 ### 19.1
-If you're on 19.1 or beyond, then change the `clearMessages` JS function to use `apex.theme42.util.configAPEXMsgs` instead of `apex.theme42.configureSuccessMessages`.
+If you're on 19.1 or beyond, then you may want to change the `clearMessages` JS function to use `apex.theme42.util.configAPEXMsgs` instead of `apex.theme42.configureSuccessMessages`. But it's optional.
 
 ## Roadmap
 * Controls to move a column to the Beginning & End
