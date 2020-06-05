@@ -1,4 +1,4 @@
-# OCD Table Reorderer
+# OCD Table Column Re-orderer
 
 _To the OCD developer in all of us._
 
