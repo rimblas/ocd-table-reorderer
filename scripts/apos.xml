@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aliases xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="aliases.xsd">
+  <alias name="apos">
+    <description><![CDATA[Moves a table's audit columns to the end. Optionally say Y in second param to move th ACTIVE_IND column also]]></description>
+    <queries> 
+      <query>
+        <sql><![CDATA[
+SET feedback off
+SET serveroutput on
+declare
+  l_table_name varchar2(100);
+  l_active_ind_present number;
+
+  procedure column_to_table_end (p_table_name in varchar2, p_column_name in varchar2)
+  is
+  begin
+    dbms_output.put_line('Moving ' || p_column_name);
+    execute immediate 'alter table ' || p_table_name || ' modify (' || p_column_name || ' invisible)';
+    execute immediate 'alter table ' || p_table_name || ' modify (' || p_column_name || ' visible)';
+  end column_to_table_end; 
+begin
+
+ l_table_name := :table_name;
+
+ begin
+ 
+   select column_id
+     into l_active_ind_present
+     from user_tab_columns
+    where upper(table_name) = upper(:table_name)
+      and column_name = 'ACTIVE_IND';
+  
+
+   column_to_table_end (l_table_name, 'ACTIVE_IND');
+
+ exception
+   when NO_DATA_FOUND then
+     null;
+ end;
+ 
+ column_to_table_end (l_table_name, 'CREATED_BY');
+ column_to_table_end (l_table_name, 'CREATED_ON');
+ column_to_table_end (l_table_name, 'UPDATED_BY');
+ column_to_table_end (l_table_name, 'UPDATED_ON');
+
+end;
+/
+SELECT column_name, column_id
+FROM user_tab_columns
+WHERE lower(table_name) = lower(:table_name)
+ORDER BY column_id;
+SET feedback on
+]]>
+                    </sql>
+            </query>
+        </queries>    
+    </alias>
+</aliases>    
