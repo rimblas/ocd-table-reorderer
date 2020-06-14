@@ -21,6 +21,9 @@ Install the [ocd-table-column-reorder.sql](apex/ocd-table-column-reorder.sql)
 
 The application will install the package [`ocd_table_reorder`](plsql/ocd_table_reorder.plb) as part of the installation or upgrade as a supporting object.
 
+If you have multiple schemas on your Workspace you'll need to install the package on all of them.  Yeah, I know...
+
+
 This app now requires APEX 18.2 (but you could trivially backport to 18.1 if needed)
 
 For APEX 5.1 see [Release v1.01](releases/tag/v1.01).
