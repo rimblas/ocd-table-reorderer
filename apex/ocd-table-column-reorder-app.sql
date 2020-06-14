@@ -26,7 +26,7 @@ prompt APPLICATION 107 - The OCD Table Column Re-Orderer
 -- Application Export:
 --   Application:     107
 --   Name:            The OCD Table Column Re-Orderer
---   Date and Time:   16:22 Sunday June 14, 2020
+--   Date and Time:   16:38 Sunday June 14, 2020
 --   Exported By:     JORGE
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -113,7 +113,7 @@ wwv_flow_api.create_flow(
 ,p_rejoin_existing_sessions=>'N'
 ,p_csv_encoding=>'Y'
 ,p_last_updated_by=>'JRIMBLAS'
-,p_last_upd_yyyymmddhh24miss=>'20200614160425'
+,p_last_upd_yyyymmddhh24miss=>'20200614163837'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>2
 ,p_ui_type_name => null
@@ -12255,6 +12255,7 @@ wwv_flow_api.create_install_script(
 ,p_script_type=>'UPGRADE'
 ,p_script_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'create or replace package ocd_table_reorder',
+'authid current_user',
 'is',
 '',
 'procedure update_order(p_table_name in varchar2);',
@@ -12415,6 +12416,7 @@ wwv_flow_api.create_install_script(
 ,p_script_type=>'INSTALL'
 ,p_script_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'create or replace package ocd_table_reorder',
+'authid current_user',
 'is',
 '',
 'procedure update_order(p_table_name in varchar2);',
