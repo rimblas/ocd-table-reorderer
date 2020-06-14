@@ -26,7 +26,7 @@ prompt APPLICATION 108 - The OCD Table Column Re-Orderer
 -- Application Export:
 --   Application:     108
 --   Name:            The OCD Table Column Re-Orderer
---   Date and Time:   09:45 Sunday June 14, 2020
+--   Date and Time:   10:01 Sunday June 14, 2020
 --   Exported By:     JMR
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -86,7 +86,7 @@ wwv_flow_api.create_flow(
 ,p_display_id=>nvl(wwv_flow_application_install.get_application_id,108)
 ,p_owner=>nvl(wwv_flow_application_install.get_schema,'JMR')
 ,p_name=>nvl(wwv_flow_application_install.get_application_name,'The OCD Table Column Re-Orderer')
-,p_alias=>nvl(wwv_flow_application_install.get_application_alias,'F_108')
+,p_alias=>nvl(wwv_flow_application_install.get_application_alias,'OCDREORDER')
 ,p_page_view_logging=>'YES'
 ,p_page_protection_enabled_y_n=>'Y'
 ,p_checksum_salt=>'3919AFF83CA2DBC7E97733C6D958336688B6F12D7463437FFEBC63669D56AA99'
@@ -101,7 +101,7 @@ wwv_flow_api.create_flow(
 ,p_application_tab_set=>0
 ,p_logo_image=>'TEXT:The OCD Table Column Re-Orderer'
 ,p_proxy_server=> nvl(wwv_flow_application_install.get_proxy,'')
-,p_flow_version=>'release 1.0'
+,p_flow_version=>'release 1.01'
 ,p_flow_status=>'AVAILABLE_W_EDIT_LINK'
 ,p_flow_unavailable_text=>'This application is currently unavailable at this time.'
 ,p_exact_substitutions_only=>'Y'
@@ -110,7 +110,7 @@ wwv_flow_api.create_flow(
 ,p_rejoin_existing_sessions=>'N'
 ,p_csv_encoding=>'Y'
 ,p_last_updated_by=>'JORGE@RIMBLAS.COM'
-,p_last_upd_yyyymmddhh24miss=>'20200614094437'
+,p_last_upd_yyyymmddhh24miss=>'20200614100045'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>2
 ,p_ui_type_name => null
@@ -11390,7 +11390,7 @@ wwv_flow_api.create_page(
 ,p_page_is_public_y_n=>'N'
 ,p_cache_mode=>'NOCACHE'
 ,p_last_updated_by=>'JORGE@RIMBLAS.COM'
-,p_last_upd_yyyymmddhh24miss=>'20200614093803'
+,p_last_upd_yyyymmddhh24miss=>'20200614100045'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(10367282126981511)
@@ -11592,7 +11592,8 @@ wwv_flow_api.create_page_item(
 ,p_help_text=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'Select a table that you want to re-order. Then drag and drop the columns.<br>',
 '<br>',
-'Read more here <a href="https://rimblas.com/blog/2020/06/the-ocd-table-column-re-orderer/" target="_blank">rimblas.com/blog/2020/06/the-ocd-table-column-re-orderer</a>'))
+'Read more here <a href="https://rimblas.com/blog/2020/06/the-ocd-table-column-re-orderer/" target="_blank">rimblas.com/blog/2020/06/the-ocd-table-column-re-orderer</a><br>',
+'Github repo: <a href="https://github.com/rimblas/ocd-table-reorderer" target="_blank">github.com/rimblas/ocd-table-reorderer</a><br>'))
 ,p_attribute_01=>'SINGLE'
 ,p_attribute_08=>'CIC'
 ,p_attribute_10=>'350px'
