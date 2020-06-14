@@ -21,10 +21,14 @@ Install the [ocd-table-column-reorder.sql](apex/ocd-table-column-reorder.sql)
 
 The application will install the package [`ocd_table_reorder`](plsql/ocd_table_reorder.plb) as part of the installation or upgrade as a supporting object.
 
-### 18.2
-If you're on APEX 18.2 or beyond, you'll need to **remove** the JS line that references `jquery.ui.sortable.min.js` on the JavaScript File URLs section of p1. It won't cause issues to leave it, but you'll get a 404 file not found error.
+This app now requires APEX 18.2 (but you could trivially backport to 18.1 if needed)
 
-### 19.1
+For APEX 5.1 see [Release v1.01](releases/tag/v1.01).
+
+
+### 19.1 or beyond
+You'll want to **remove** the JS line that references `jquery.ui.sortable.min.js` on the JavaScript File URLs section of p1. It won't cause issues to leave it, but you'll get a 404 file not found error.
+
 If you're on 19.1 or beyond, then you may want to change the `clearMessages` JS function to use `apex.theme42.util.configAPEXMsgs` instead of `apex.theme42.configureSuccessMessages`. But it's optional.
 
 
