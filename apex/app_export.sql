@@ -3,7 +3,6 @@
 set termout off
 define APP_ID = 108
 
-spool f&APP_ID..sql
 apex export &APP_ID.
-spool off
+host mv f108.sql ocd-table-column-reorder-app.sql
 exit

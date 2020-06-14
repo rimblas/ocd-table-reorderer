@@ -19,6 +19,7 @@ Well, I say no more.
 This is a straightforward single page APEX app compatible with APEX 5.1.
 Install the [ocd-table-column-reorder.sql](apex/ocd-table-column-reorder.sql)
 
+The application will install the package [`ocd_table_reorder`](plsql/ocd_table_reorder.plb) as part of the installation or upgrade as a supporting object.
 
 ### 18.2
 If you're on APEX 18.2 or beyond, you'll need to **remove** the JS line that references `jquery.ui.sortable.min.js` on the JavaScript File URLs section of p1. It won't cause issues to leave it, but you'll get a 404 file not found error.
@@ -26,7 +27,13 @@ If you're on APEX 18.2 or beyond, you'll need to **remove** the JS line that ref
 ### 19.1
 If you're on 19.1 or beyond, then you may want to change the `clearMessages` JS function to use `apex.theme42.util.configAPEXMsgs` instead of `apex.theme42.configureSuccessMessages`. But it's optional.
 
+
+## Pre-Requisites
+
+The functionality to re-order the columns depends on the [Invisible Columns](https://oracle-base.com/articles/12c/invisible-columns-12cr1) feature of Oracle Databace 12c.
+
 ## Roadmap
+
 * Controls to move a column to the Beginning & End
 * Pre-Defined column arrangements (like move Audit Columns to the end)
 * Block Move: select multiple columns that will move together

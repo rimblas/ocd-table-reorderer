@@ -26,7 +26,7 @@ prompt APPLICATION 108 - The OCD Table Column Re-Orderer
 -- Application Export:
 --   Application:     108
 --   Name:            The OCD Table Column Re-Orderer
---   Date and Time:   14:16 Friday June 5, 2020
+--   Date and Time:   09:45 Sunday June 14, 2020
 --   Exported By:     JMR
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -36,13 +36,15 @@ prompt APPLICATION 108 - The OCD Table Column Re-Orderer
 
 -- Application Statistics:
 --   Pages:                      2
---     Items:                    4
+--     Items:                    7
 --     Processes:                5
---     Regions:                  5
+--     Regions:                  6
 --     Buttons:                  1
---     Dynamic Actions:          3
+--     Dynamic Actions:          4
 --   Shared Components:
 --     Logic:
+--       Items:                  1
+--       Computations:           1
 --     Navigation:
 --       Lists:                  2
 --       Breadcrumbs:            1
@@ -64,7 +66,8 @@ prompt APPLICATION 108 - The OCD Table Column Re-Orderer
 --       Plug-ins:               1
 --     Globalization:
 --     Reports:
---   Supporting Objects:  Excluded
+--   Supporting Objects:  Included
+--     Install scripts:          2
 
 prompt --application/delete_application
 begin
@@ -107,7 +110,7 @@ wwv_flow_api.create_flow(
 ,p_rejoin_existing_sessions=>'N'
 ,p_csv_encoding=>'Y'
 ,p_last_updated_by=>'JORGE@RIMBLAS.COM'
-,p_last_upd_yyyymmddhh24miss=>'20200605141605'
+,p_last_upd_yyyymmddhh24miss=>'20200614094437'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>2
 ,p_ui_type_name => null
@@ -134,6 +137,13 @@ wwv_flow_api.create_list(
  p_id=>wwv_flow_api.id(10873093319565100)
 ,p_name=>'Desktop Navigation Bar'
 ,p_list_status=>'PUBLIC'
+);
+wwv_flow_api.create_list_item(
+ p_id=>wwv_flow_api.id(10951684685345722)
+,p_list_item_display_sequence=>5
+,p_list_item_link_text=>'Schema: &G_SCHEMA.'
+,p_list_item_link_target=>'#'
+,p_list_item_current_type=>'TARGET_PAGE'
 );
 wwv_flow_api.create_list_item(
  p_id=>wwv_flow_api.id(10873282421565210)
@@ -220,12 +230,29 @@ end;
 /
 prompt --application/shared_components/logic/application_items
 begin
-null;
+wwv_flow_api.create_flow_item(
+ p_id=>wwv_flow_api.id(10950580115300002)
+,p_name=>'G_SCHEMA'
+,p_protection_level=>'I'
+,p_item_comment=>'Currently selected schema'
+);
 end;
 /
 prompt --application/shared_components/logic/application_computations
 begin
-null;
+wwv_flow_api.create_flow_computation(
+ p_id=>wwv_flow_api.id(10950967596342023)
+,p_computation_sequence=>10
+,p_computation_item=>'G_SCHEMA'
+,p_computation_point=>'ON_NEW_INSTANCE'
+,p_computation_type=>'QUERY'
+,p_computation_processed=>'REPLACE_EXISTING'
+,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'select owner',
+'  from apex_applications',
+' where application_id = :APP_ID'))
+,p_computation_error_message=>'Could not obtain the application owner'
+);
 end;
 /
 prompt --application/shared_components/navigation/tabs/standard
@@ -11147,6 +11174,7 @@ wwv_flow_api.create_page(
 ,p_name=>'Re-orderer'
 ,p_page_mode=>'NORMAL'
 ,p_step_title=>'OCD Table Reorderer'
+,p_warn_on_unsaved_changes=>'N'
 ,p_step_sub_title=>'Home'
 ,p_step_sub_title_type=>'TEXT_WITH_SUBSTITUTIONS'
 ,p_first_item=>'NO_FIRST_ITEM'
@@ -11203,6 +11231,7 @@ wwv_flow_api.create_page(
 '            });',
 '          ',
 '      }',
+'      $s("P1_CODE", pData.sql);',
 '      apex.event.trigger(pRegionID, ''apexrefresh'');',
 '',
 '    }',
@@ -11217,10 +11246,12 @@ wwv_flow_api.create_page(
 ''))
 ,p_css_file_urls=>'https://fonts.googleapis.com/css?family=Anonymous+Pro:400,700%7COpen+Sans:400,700'
 ,p_inline_css=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'#P1_TABLE_NAME_CONTAINER {margin-left: 0;}',
-'#P1_TABLE_NAME_CONTAINER .t-Form-labelContainer {',
-' width: auto;',
+'#P1_TABLE_NAME_CONTAINER, #P1_SHOW_CODE_CONTAINER {margin-left: 0;}',
+'#P1_TABLE_NAME_CONTAINER .t-Form-labelContainer,',
+'#P1_SHOW_CODE_CONTAINER .t-Form-labelContainer {',
+'  width: auto;',
 '}',
+'',
 '.debug {display: none;}',
 'body.grid-debug-on .debug {',
 '  display: inline;',
@@ -11327,7 +11358,7 @@ wwv_flow_api.create_page(
 '.cellPopup {',
 '    position: absolute;',
 '    z-index: 900;',
-'    top: 0em;',
+'    top: -1em;',
 '    left: 5.5em;',
 '    max-width: 34em;',
 '    min-width: 15em;',
@@ -11359,7 +11390,7 @@ wwv_flow_api.create_page(
 ,p_page_is_public_y_n=>'N'
 ,p_cache_mode=>'NOCACHE'
 ,p_last_updated_by=>'JORGE@RIMBLAS.COM'
-,p_last_upd_yyyymmddhh24miss=>'20200605135950'
+,p_last_upd_yyyymmddhh24miss=>'20200614093803'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(10367282126981511)
@@ -11396,6 +11427,7 @@ wwv_flow_api.create_report_region(
 ,p_region_sub_css_classes=>'appColumns'
 ,p_region_template_options=>'#DEFAULT#'
 ,p_component_template_options=>'#DEFAULT#'
+,p_grid_column_span=>5
 ,p_display_point=>'BODY'
 ,p_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'select tc.column_id',
@@ -11414,12 +11446,15 @@ wwv_flow_api.create_report_region(
 'order by tc.column_id nulls last',
 ''))
 ,p_source_type=>'NATIVE_SQL_REPORT'
+,p_header=>'<div>&nbsp;</div>'
 ,p_ajax_enabled=>'Y'
 ,p_ajax_items_to_submit=>'P1_TABLE_NAME'
 ,p_query_row_template=>wwv_flow_api.id(10879930243637374)
 ,p_query_num_rows=>200
 ,p_query_options=>'DERIVED_REPORT_COLUMNS'
-,p_query_no_data_found=>'<span class="cellPopup">Find a table and re-order!</span>'
+,p_query_no_data_found=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'<span class="cellPopup">Find a table and re-order!</span>',
+''))
 ,p_csv_output=>'N'
 ,p_prn_output=>'N'
 ,p_sort_null=>'L'
@@ -11507,6 +11542,21 @@ wwv_flow_api.create_report_columns(
 ,p_include_in_export=>'Y'
 );
 wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(10370053958981539)
+,p_plug_name=>'{col2}'
+,p_parent_plug_id=>wwv_flow_api.id(10367282126981511)
+,p_region_template_options=>'#DEFAULT#'
+,p_plug_template=>wwv_flow_api.id(10830407555564767)
+,p_plug_display_sequence=>30
+,p_include_in_reg_disp_sel_yn=>'N'
+,p_plug_new_grid_row=>false
+,p_plug_grid_column_css_classes=>'col-sm-12 col-xs-12'
+,p_plug_display_point=>'BODY'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
+wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(10368796339981526)
 ,p_plug_name=>'Oracle Database 12c Required'
 ,p_region_template_options=>'#DEFAULT#:t-Alert--colorBG:t-Alert--horizontal:t-Alert--defaultIcons:t-Alert--danger'
@@ -11552,10 +11602,55 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(10369903777981538)
 ,p_name=>'P1_COLUMN_NAME'
-,p_item_sequence=>20
+,p_item_sequence=>30
 ,p_item_plug_id=>wwv_flow_api.id(10367637660981515)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'N'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(10370137936981540)
+,p_name=>'P1_CODE'
+,p_item_sequence=>30
+,p_item_plug_id=>wwv_flow_api.id(10370053958981539)
+,p_prompt=>'Commands'
+,p_display_as=>'NATIVE_TEXTAREA'
+,p_cSize=>50
+,p_cHeight=>7
+,p_field_template=>wwv_flow_api.id(10861719079564884)
+,p_item_template_options=>'#DEFAULT#:t-Form-fieldContainer--stretchInputs'
+,p_attribute_01=>'Y'
+,p_attribute_02=>'Y'
+,p_attribute_03=>'N'
+,p_attribute_04=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(10370371602981542)
+,p_name=>'P1_SHOW_CODE'
+,p_item_sequence=>20
+,p_item_plug_id=>wwv_flow_api.id(10370053958981539)
+,p_item_default=>'Y'
+,p_prompt=>'Show code?'
+,p_display_as=>'NATIVE_CHECKBOX'
+,p_lov=>'STATIC:;Y'
+,p_lov_display_null=>'YES'
+,p_field_template=>wwv_flow_api.id(10861845361564889)
+,p_item_template_options=>'#DEFAULT#'
+,p_lov_display_extra=>'YES'
+,p_help_text=>'Show the alter statements executed to re-order the columns.'
+,p_attribute_01=>'1'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(10370723532981546)
+,p_name=>'P1_SPACER'
+,p_item_sequence=>10
+,p_item_plug_id=>wwv_flow_api.id(10370053958981539)
+,p_display_as=>'NATIVE_DISPLAY_ONLY'
+,p_field_template=>wwv_flow_api.id(10861974313564890)
+,p_item_css_classes=>'hidden-md-up'
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'VALUE'
+,p_attribute_04=>'Y'
 );
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(10368122944981520)
@@ -11575,6 +11670,20 @@ wwv_flow_api.create_page_da_action(
 ,p_action=>'NATIVE_REFRESH'
 ,p_affected_elements_type=>'REGION'
 ,p_affected_region_id=>wwv_flow_api.id(10367864961981517)
+);
+wwv_flow_api.create_page_da_action(
+ p_id=>wwv_flow_api.id(10370295829981541)
+,p_event_id=>wwv_flow_api.id(10368122944981520)
+,p_event_result=>'TRUE'
+,p_action_sequence=>20
+,p_execute_on_page_init=>'Y'
+,p_action=>'NATIVE_SET_VALUE'
+,p_affected_elements_type=>'ITEM'
+,p_affected_elements=>'P1_CODE'
+,p_attribute_01=>'STATIC_ASSIGNMENT'
+,p_attribute_09=>'N'
+,p_stop_execution_on_error=>'Y'
+,p_wait_for_result=>'Y'
 );
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(10368350497981522)
@@ -11650,87 +11759,47 @@ wwv_flow_api.create_page_da_action(
 ,p_affected_elements_type=>'REGION'
 ,p_affected_region_id=>wwv_flow_api.id(10367864961981517)
 );
+wwv_flow_api.create_page_da_event(
+ p_id=>wwv_flow_api.id(10370481401981543)
+,p_name=>'Show Hide Code'
+,p_event_sequence=>40
+,p_triggering_element_type=>'ITEM'
+,p_triggering_element=>'P1_SHOW_CODE'
+,p_condition_element=>'P1_SHOW_CODE'
+,p_triggering_condition_type=>'EQUALS'
+,p_triggering_expression=>'Y'
+,p_bind_type=>'bind'
+,p_bind_event_type=>'change'
+);
+wwv_flow_api.create_page_da_action(
+ p_id=>wwv_flow_api.id(10370577583981544)
+,p_event_id=>wwv_flow_api.id(10370481401981543)
+,p_event_result=>'TRUE'
+,p_action_sequence=>10
+,p_execute_on_page_init=>'Y'
+,p_action=>'NATIVE_SHOW'
+,p_affected_elements_type=>'ITEM'
+,p_affected_elements=>'P1_CODE'
+,p_attribute_01=>'N'
+);
+wwv_flow_api.create_page_da_action(
+ p_id=>wwv_flow_api.id(10370694313981545)
+,p_event_id=>wwv_flow_api.id(10370481401981543)
+,p_event_result=>'FALSE'
+,p_action_sequence=>10
+,p_execute_on_page_init=>'Y'
+,p_action=>'NATIVE_HIDE'
+,p_affected_elements_type=>'ITEM'
+,p_affected_elements=>'P1_CODE'
+,p_attribute_01=>'N'
+);
 wwv_flow_api.create_page_process(
  p_id=>wwv_flow_api.id(10368602391981525)
 ,p_process_sequence=>10
 ,p_process_point=>'ON_DEMAND'
 ,p_process_type=>'NATIVE_PLSQL'
 ,p_process_name=>'UPDATE_ORDER'
-,p_process_sql_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'declare',
-'  subtype col_name_t is varchar2(128);',
-'  type columns_rec_type is record (',
-'      column_name  col_name_t',
-'  );',
-'',
-'  type column_tbl_type',
-'    is table of columns_rec_type',
-'    index by binary_integer;',
-'',
-'  cols_arr column_tbl_type;',
-'',
-'  g_curr_column col_name_t;',
-'  ',
-'  procedure add_column(p_column_name in varchar2)',
-'  is',
-'    l_index  PLS_INTEGER;',
-'  begin',
-'    l_index := cols_arr.COUNT + 1;',
-'    cols_arr(l_index).column_name := p_column_name;',
-'  end add_column;',
-'',
-'  procedure column_to_table_end (p_table_name in varchar2, p_column_name in varchar2)',
-'  is',
-'  begin',
-'    g_curr_column := p_column_name;',
-'    -- logger.log(''Moving '' || p_table_name || ''.'' || p_column_name);',
-'    execute immediate ''alter table '' || p_table_name || '' modify ('' || p_column_name || '' invisible)'';',
-'    execute immediate ''alter table '' || p_table_name || '' modify ('' || p_column_name || '' visible)'';',
-'  end column_to_table_end;',
-'',
-'begin',
-'  -- logger.log(''Reordering '' || :P1_TABLE_NAME);',
-'  <<position>>',
-'  for i in 1..apex_application.g_f01.count',
-'  loop',
-'    <<column_in_position>>',
-'    for c in (',
-'      select c.column_name',
-'       from user_tab_columns c',
-'      where c.column_id = apex_application.g_f01(i)',
-'        and c.table_name = :P1_TABLE_NAME',
-'    )',
-'    loop',
-'      add_column(c.column_name);',
-'    end loop column_in_position;',
-'  end loop position;',
-'',
-'',
-'  for i in 1..cols_arr.COUNT loop',
-'    column_to_table_end(:P1_TABLE_NAME, cols_arr(i).column_name);',
-'  end loop;',
-'',
-'',
-'  apex_json.open_object;',
-'  apex_json.write(',
-'        p_name => ''success''',
-'      , p_value => true',
-'  );',
-'  apex_json.close_object;',
-'exception',
-'  when OTHERS then',
-'',
-'  apex_json.open_object;',
-'  apex_json.write(',
-'        p_name => ''success''',
-'      , p_value => false',
-'  );',
-'  apex_json.write(',
-'        p_name => ''message''',
-'      , p_value => ''Column "'' || g_curr_column || ''" '' || sqlerrm',
-'  );',
-'  apex_json.close_object;',
-'end;'))
+,p_process_sql_clob=>'ocd_table_reorder.update_order(p_table_name => :P1_TABLE_NAME);'
 ,p_error_display_location=>'INLINE_IN_NOTIFICATION'
 );
 end;
@@ -11863,6 +11932,343 @@ wwv_flow_api.create_page_process(
 ,p_process_name=>'Get Username Cookie'
 ,p_process_sql_clob=>':P101_USERNAME := apex_authentication.get_login_username_cookie;'
 );
+end;
+/
+prompt --application/deployment/definition
+begin
+wwv_flow_api.create_install(
+ p_id=>wwv_flow_api.id(10947844974609382)
+,p_get_version_sql_query=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'select object_name',
+'  from sys.user_objects',
+' where object_name = ''OCD_TABLE_REORDER''',
+'   and object_type = ''PACKAGE BODY'''))
+);
+end;
+/
+prompt --application/deployment/install
+begin
+wwv_flow_api.create_install_script(
+ p_id=>wwv_flow_api.id(10952706139384156)
+,p_install_id=>wwv_flow_api.id(10947844974609382)
+,p_name=>'ocd_table_reorder'
+,p_sequence=>10
+,p_script_type=>'UPGRADE'
+,p_script_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'create or replace package ocd_table_reorder',
+'is',
+'',
+'procedure update_order(p_table_name in varchar2);',
+'',
+'end ocd_table_reorder;',
+'/',
+'-- alter session set PLSQL_CCFLAGS=''OOS_LOGGER:TRUE'';',
+'create or replace package body ocd_table_reorder',
+'is',
+'',
+'',
+'c_crlf      constant varchar2(30) := chr(13)||chr(10);',
+'',
+'subtype col_name_t is varchar2(128);',
+'subtype large_string_t is varchar2(32767);',
+'',
+'type columns_rec_type is record (',
+'    column_name  col_name_t',
+');',
+'',
+'type column_tbl_type',
+'  is table of columns_rec_type',
+'  index by binary_integer;',
+'',
+'',
+'procedure update_order(p_table_name in varchar2)',
+'as',
+'-- declare',
+'',
+'',
+'  cols_arr column_tbl_type;',
+'',
+'  started_moving boolean;',
+'  g_curr_column col_name_t;',
+'  g_full_sql large_string_t;',
+'  ',
+'  procedure add_column(p_column_name in varchar2)',
+'  is',
+'    l_index  PLS_INTEGER;',
+'  begin',
+'    l_index := cols_arr.COUNT + 1;',
+'    cols_arr(l_index).column_name := p_column_name;',
+'  end add_column;',
+'',
+'  procedure column_to_table_end (p_table_name in varchar2, p_column_name in varchar2)',
+'  is',
+'    l_sql_i  large_string_t;',
+'    l_sql_v  large_string_t;',
+'',
+'    e_visibility_cannot_be_changed exception;',
+'    pragma exception_init (e_visibility_cannot_be_changed, -54041); ',
+'  begin',
+'    g_curr_column := p_column_name;',
+'    $IF $$OOS_LOGGER $THEN',
+'    logger.log(''Moving '' || p_table_name || ''.'' || p_column_name);',
+'    $END',
+'    l_sql_i := ''alter table '' || p_table_name || '' modify ('' || p_column_name;',
+'    l_sql_v := l_sql_i || '' visible)'';',
+'    l_sql_i := l_sql_i || '' invisible)'';',
+'',
+'    execute immediate l_sql_i;',
+'    execute immediate l_sql_v;',
+'',
+'    g_full_sql := g_full_sql',
+'               || l_sql_i || '';'' || c_crlf',
+'               || l_sql_v || '';'' || c_crlf;',
+'  -- exception',
+'  --  when e_visibility_cannot_be_changed then',
+'  --    -- log the error, but continue with the rest of the columns',
+'  --    g_full_sql := g_full_sql || ''-- Skipping column '' || p_column_name || c_crlf',
+'  --               || ''-- '' || sqlerrm || c_crlf;',
+'  end column_to_table_end;',
+'',
+'begin',
+'  g_full_sql := null;',
+'  g_curr_column := null;',
+'  started_moving := false;',
+'',
+'  g_full_sql := ''-- Reordering '' || p_table_name || c_crlf;',
+'  $IF $$OOS_LOGGER $THEN',
+'  logger.log(g_full_sql);',
+'  $END',
+'',
+'  <<position>>',
+'  for i in 1..apex_application.g_f01.count',
+'  loop',
+'    if not started_moving and i = apex_application.g_f01(i) then',
+'       -- logger.log(''Skipping '' || i);',
+'       continue;',
+'    else',
+'      <<column_in_position>>',
+'      $IF $$OOS_LOGGER $THEN',
+'      logger.log(''Will move '' || i);',
+'      $END',
+'      started_moving := true;',
+'      for c in (',
+'        select c.column_name',
+'         from user_tab_columns c',
+'        where c.table_name = p_table_name',
+'          and c.column_id = to_number(apex_application.g_f01(i))',
+'      )',
+'      loop',
+'        add_column(c.column_name);',
+'      end loop column_in_position;',
+'    end if;',
+'  end loop position;',
+'',
+'',
+'  for i in 1..cols_arr.COUNT loop',
+'    column_to_table_end(p_table_name, cols_arr(i).column_name);',
+'  end loop;',
+'',
+'',
+'  apex_json.open_object;',
+'  apex_json.write(',
+'        p_name => ''success''',
+'      , p_value => true',
+'  );',
+'  apex_json.write(',
+'        p_name => ''sql''',
+'      , p_value => g_full_sql',
+'  );',
+'  apex_json.close_object;',
+'exception',
+'  when OTHERS then',
+'',
+'  apex_json.open_object;',
+'  apex_json.write(',
+'        p_name => ''success''',
+'      , p_value => false',
+'  );',
+'  apex_json.write(',
+'        p_name => ''message''',
+'      , p_value => ''Column "'' || g_curr_column || ''" '' || sqlerrm',
+'  );',
+'  g_full_sql := g_full_sql || ''-- Column: '' || g_curr_column || c_crlf || sqlerrm || c_crlf;',
+'',
+'  apex_json.write(',
+'        p_name => ''sql''',
+'      , p_value => g_full_sql',
+'  );',
+'  apex_json.close_object;',
+'end update_order;',
+'',
+'',
+'end ocd_table_reorder;',
+'/'))
+);
+wwv_flow_api.create_install_script(
+ p_id=>wwv_flow_api.id(10948163981615729)
+,p_install_id=>wwv_flow_api.id(10947844974609382)
+,p_name=>'ocd_update_table_order'
+,p_sequence=>10
+,p_script_type=>'INSTALL'
+,p_script_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'create or replace package ocd_table_reorder',
+'is',
+'',
+'procedure update_order(p_table_name in varchar2);',
+'',
+'end ocd_table_reorder;',
+'/',
+'create or replace package body ocd_table_reorder',
+'is',
+'',
+'',
+'c_crlf      constant varchar2(30) := chr(13)||chr(10);',
+'',
+'subtype col_name_t is varchar2(128);',
+'subtype large_string_t is varchar2(32767);',
+'',
+'type columns_rec_type is record (',
+'    column_name  col_name_t',
+');',
+'',
+'type column_tbl_type',
+'  is table of columns_rec_type',
+'  index by binary_integer;',
+'',
+'',
+'procedure update_order(p_table_name in varchar2)',
+'as',
+'-- declare',
+'',
+'',
+'  cols_arr column_tbl_type;',
+'',
+'  started_moving boolean;',
+'  g_curr_column col_name_t;',
+'  g_full_sql large_string_t;',
+'  ',
+'  procedure add_column(p_column_name in varchar2)',
+'  is',
+'    l_index  PLS_INTEGER;',
+'  begin',
+'    l_index := cols_arr.COUNT + 1;',
+'    cols_arr(l_index).column_name := p_column_name;',
+'  end add_column;',
+'',
+'  procedure column_to_table_end (p_table_name in varchar2, p_column_name in varchar2)',
+'  is',
+'    l_sql_i  large_string_t;',
+'    l_sql_v  large_string_t;',
+'',
+'    e_visibility_cannot_be_changed exception;',
+'    pragma exception_init (e_visibility_cannot_be_changed, -54041); ',
+'  begin',
+'    g_curr_column := p_column_name;',
+'    $IF $$OOS_LOGGER $THEN',
+'    logger.log(''Moving '' || p_table_name || ''.'' || p_column_name);',
+'    $END',
+'    l_sql_i := ''alter table '' || p_table_name || '' modify ('' || p_column_name;',
+'    l_sql_v := l_sql_i || '' visible)'';',
+'    l_sql_i := l_sql_i || '' invisible)'';',
+'',
+'    execute immediate l_sql_i;',
+'    execute immediate l_sql_v;',
+'',
+'    g_full_sql := g_full_sql',
+'               || l_sql_i || '';'' || c_crlf',
+'               || l_sql_v || '';'' || c_crlf;',
+'  -- exception',
+'  --  when e_visibility_cannot_be_changed then',
+'  --    -- log the error, but continue with the rest of the columns',
+'  --    g_full_sql := g_full_sql || ''-- Skipping column '' || p_column_name || c_crlf',
+'  --               || ''-- '' || sqlerrm || c_crlf;',
+'  end column_to_table_end;',
+'',
+'begin',
+'  g_full_sql := null;',
+'  g_curr_column := null;',
+'  started_moving := false;',
+'',
+'  g_full_sql := ''-- Reordering '' || p_table_name || c_crlf;',
+'  $IF $$OOS_LOGGER $THEN',
+'  logger.log(g_full_sql);',
+'  $END',
+'',
+'  <<position>>',
+'  for i in 1..apex_application.g_f01.count',
+'  loop',
+'    if not started_moving and i = apex_application.g_f01(i) then',
+'       -- logger.log(''Skipping '' || i);',
+'       continue;',
+'    else',
+'      <<column_in_position>>',
+'      $IF $$OOS_LOGGER $THEN',
+'      logger.log(''Will move '' || i);',
+'      $END',
+'      started_moving := true;',
+'      for c in (',
+'        select c.column_name',
+'         from user_tab_columns c',
+'        where c.table_name = p_table_name',
+'          and c.column_id = to_number(apex_application.g_f01(i))',
+'      )',
+'      loop',
+'        add_column(c.column_name);',
+'      end loop column_in_position;',
+'    end if;',
+'  end loop position;',
+'',
+'',
+'  for i in 1..cols_arr.COUNT loop',
+'    column_to_table_end(p_table_name, cols_arr(i).column_name);',
+'  end loop;',
+'',
+'',
+'  apex_json.open_object;',
+'  apex_json.write(',
+'        p_name => ''success''',
+'      , p_value => true',
+'  );',
+'  apex_json.write(',
+'        p_name => ''sql''',
+'      , p_value => g_full_sql',
+'  );',
+'  apex_json.close_object;',
+'exception',
+'  when OTHERS then',
+'',
+'  apex_json.open_object;',
+'  apex_json.write(',
+'        p_name => ''success''',
+'      , p_value => false',
+'  );',
+'  apex_json.write(',
+'        p_name => ''message''',
+'      , p_value => ''Column "'' || g_curr_column || ''" '' || sqlerrm',
+'  );',
+'  g_full_sql := g_full_sql || ''-- Column: '' || g_curr_column || c_crlf || sqlerrm || c_crlf;',
+'',
+'  apex_json.write(',
+'        p_name => ''sql''',
+'      , p_value => g_full_sql',
+'  );',
+'  apex_json.close_object;',
+'end update_order;',
+'',
+'',
+'end ocd_table_reorder;',
+'/'))
+);
+end;
+/
+prompt --application/deployment/checks
+begin
+null;
+end;
+/
+prompt --application/deployment/buildoptions
+begin
+null;
 end;
 /
 prompt --application/end_environment
