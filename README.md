@@ -1,6 +1,6 @@
 # OCD Table Column Re-orderer
 
-_To the OCD developer in all of us._
+_To the [OCD](https://www.mayoclinic.org/diseases-conditions/obsessive-compulsive-disorder/symptoms-causes/syc-20354432) developer in all of us._
 
 You have a carefully crafted table. Then the requirements change, as they always do, and you an important column to the table. Where does that column go? Well, at the end of the table of course.
 
@@ -16,8 +16,8 @@ Well, I say no more.
 * Is a new table created? No, not at all!
 
 ## Install
-This is a straightforward single page APEX app compatible with APEX 5.1.
-Install the [ocd-table-column-reorder.sql](apex/ocd-table-column-reorder.sql)
+This is a straightforward single page APEX app.
+Install the [ocd-table-column-reorder.sql](apex/ocd-table-column-reorder.sql) application.
 
 The application will install the package [`ocd_table_reorder`](plsql/ocd_table_reorder.plb) as part of the installation or upgrade as a supporting object.
 
