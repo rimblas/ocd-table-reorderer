@@ -7,7 +7,9 @@ You have a carefully crafted table. Then the requirements change, as they always
 Well, I say no more.
 
 ## Preview
-![Alt text](/preview.gif?raw=true "Preview")
+![Functionality Preview](/preview.gif?raw=true "Preview")
+
+![Schema Switching](/docs/images/ocd-schema-switch-preview.gif?raw=true "Schema Switch Preview")
 
 
 ## Q&A
