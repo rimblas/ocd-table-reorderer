@@ -35,6 +35,7 @@ connect NEW_SCHEMA
 create synonym ocd_table_reorder for ORIGINAL_SCHEMA.ocd_table_reorder;
 ```
 
+[See a video](https://www.youtube.com/watch?v=KYMun3YObrI) of the switching between schemas feature implementation.
 
 
 This app now requires APEX 18.2 (but you could trivially backport to 18.1 if needed)
