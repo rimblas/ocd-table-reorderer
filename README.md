@@ -11,6 +11,8 @@ Well, I say no more.
 
 ![Schema Switching](/docs/images/ocd-schema-switch-preview.gif?raw=true "Schema Switch Preview")
 
+![Multi-Select](/docs/images/ocd-multi-select.gif?raw=true "Multi-Select Preview")
+
 
 ## Q&A
 * Is it safe? I think so, I use it all the time but **USE AT YOUR OWN RISK**
@@ -44,8 +46,6 @@ For APEX 5.1 see [Release v1.01](releases/tag/v1.01).
 
 
 ### 19.1 or beyond
-You'll want to **remove** the JS line that references `jquery.ui.sortable.min.js` on the JavaScript File URLs section of p1. It won't cause issues to leave it, but you'll get a 404 file not found error.
-
 If you're on 19.1 or beyond, then you may want to change the `clearMessages` JS function to use `apex.theme42.util.configAPEXMsgs` instead of `apex.theme42.configureSuccessMessages`. But it's optional.
 
 
@@ -55,9 +55,8 @@ The functionality to re-order the columns depends on the [Invisible Columns](htt
 
 ## Roadmap
 
-* Controls to move a column to the Beginning & End
+* Block Move: select multiple columns that will move together ✅  (v2.01 June 18, 2020!!)
 * Pre-Defined column arrangements (like move Audit Columns to the end)
-* Block Move: select multiple columns that will move together
 
 
 ### Credits

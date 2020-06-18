@@ -58,12 +58,25 @@ as
     g_full_sql := g_full_sql
                || l_sql_i || ';' || c_crlf
                || l_sql_v || ';' || c_crlf;
-  -- exception
-  --  when e_visibility_cannot_be_changed then
-  --    -- log the error, but continue with the rest of the columns
-  --    g_full_sql := g_full_sql || '-- Skipping column ' || p_column_name || c_crlf
-  --               || '-- ' || sqlerrm || c_crlf;
+  exception
+     when e_visibility_cannot_be_changed then
+       -- log the error, but continue with the rest of the columns
+       g_full_sql := g_full_sql || '-- Skipping column ' || p_column_name || c_crlf
+                  || '-- ' || sqlerrm || c_crlf;
   end column_to_table_end;
+
+
+  function is_number(p_value varchar2)
+    return boolean
+  is
+    i number;
+  begin
+    i := p_value;
+    return true;
+    exception
+  when OTHERS then
+    return false;
+  end is_number;
 
 begin
   g_full_sql := null;
@@ -78,25 +91,39 @@ begin
   <<position>>
   for i in 1..apex_application.g_f01.count
   loop
-    if not started_moving and i = apex_application.g_f01(i) then
-       -- logger.log('Skipping ' || i);
-       continue;
+    if is_number(apex_application.g_f01(i)) then
+
+      if not started_moving and i = apex_application.g_f01(i) then
+         continue;
+      else
+        $IF $$OOS_LOGGER $THEN
+        logger.log('Will move ' || i);
+        $END
+
+        started_moving := true;
+        <<column_in_position>>
+        for c in (
+          select c.column_name
+           from user_tab_columns c
+          where c.table_name = p_table_name
+            and c.column_id = to_number(apex_application.g_f01(i))
+        )
+        loop
+          add_column(c.column_name);
+        end loop column_in_position;
+      end if;
+
+
     else
-      <<column_in_position>>
       $IF $$OOS_LOGGER $THEN
-      logger.log('Will move ' || i);
+      logger.log('Got a non-number: ' || apex_application.g_f01(i));
       $END
-      started_moving := true;
-      for c in (
-        select c.column_name
-         from user_tab_columns c
-        where c.table_name = p_table_name
-          and c.column_id = to_number(apex_application.g_f01(i))
-      )
-      loop
-        add_column(c.column_name);
-      end loop column_in_position;
+
+      null; -- we simply skip non-numeric positions.
+            -- sortable JS will send us the filtered entries (already
+            -- invisible columns) and we need to skip those
     end if;
+
   end loop position;
 
 

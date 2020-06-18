@@ -3,6 +3,7 @@
 bin
 node_modules
 tmp
+www/dist
 
 # Logs
 logs
