@@ -7,8 +7,8 @@ You have a carefully crafted table. Then the requirements change, as they always
 Well, I say no more.
 
 ## OCD?
-OCD means Obsessive-compulsive disorder. It's a real disease and no laughing matter. Read more from the [Mayo Clinic]([OCD](https://www.mayoclinic.org/diseases-conditions/obsessive-compulsive-disorder/symptoms-causes/syc-20354432).
-Now, of course, the name of this app is tongue in cheek.  Many of us feel annoyed when we add an important column to a table, and it's listed at the end of the table. We wish we could move it and place it in a logical position. Well, now you can!
+OCD means Obsessive-compulsive disorder. It's a real disease and no laughing matter. Read more from the [Mayo Clinic](https://www.mayoclinic.org/diseases-conditions/obsessive-compulsive-disorder/symptoms-causes/syc-20354432).
+Now, of course, the name of this app is tongue in cheek.  Many of us feel annoyed when we add an important column to a table, and it's listed at the end. We wish we could move it and place it in a logical position. Well, now we can!
 
 
 ## Preview
